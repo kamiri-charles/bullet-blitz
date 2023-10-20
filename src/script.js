@@ -1,7 +1,7 @@
 import Player from './modules/Player';
-import test_map_loc from './assets/maps/test/test_map.png';
-import { globals } from './utils';
 import Terrain from './modules/Terrain';
+import { globals } from './utils';
+import test_map_loc from './assets/maps/test/test_map.png';
 import { surface_data } from './assets/maps/test/data';
 import { platform_data } from './assets/maps/test/data';
 
@@ -26,13 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
     resize_canvas();
 
     const keys = {
-        up: {pressed: false},
         right: {pressed: false},
-        down: {pressed: false},
         left: {pressed: false}
     };
-
-    
     
     const test_map = new Terrain(test_map_loc);
     test_map.load({
@@ -49,11 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const animate = () => {
         requestAnimationFrame(animate);
 
-        // Render surface
-        //ctx.fillStyle = 'black';
-        //ctx.fillRect(0, canvas.height - 100, canvas.width, canvas.height);
         test_map.render(ctx);
-
         player.render(ctx);
 
 
@@ -74,18 +66,15 @@ document.addEventListener('DOMContentLoaded', () => {
         switch (e.key) {
             case 'w':
             case 'ArrowUp':
-                keys.up.pressed = true
-                player.velocity.y = -globals.PLAYER_JUMP_HEIGHT;
+                if (player.jumps < globals.MAX_JUMPS) {
+                    player.jumps++;
+                    player.velocity.y = -globals.PLAYER_JUMP_HEIGHT;
+                };
                 break;
 
             case 'd':
             case 'ArrowRight':
                 keys.right.pressed = true;
-                break;
-
-            case 's':
-            case 'ArrowDown':
-                keys.down.pressed = true;
                 break;
 
             case 'a':
@@ -97,19 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('keyup', e => {
       switch (e.key) {
-        case "w":
-        case "ArrowUp":
-          keys.up.pressed = false;
-          break;
-
         case "d":
         case "ArrowRight":
           keys.right.pressed = false;
-          break;
-
-        case "s":
-        case "ArrowDown":
-          keys.down.pressed = false;
           break;
 
         case "a":

@@ -8,13 +8,11 @@ export default class Player {
         this.platform_blocks = platform_blocks;
         this.width = 25;
         this.height = 25;
-        
-        
-        
         this.velocity = {
             x: 0,
             y: 0
         };
+        this.jumps = 0;
     };
     
     _apply_gravity() {
@@ -38,6 +36,7 @@ export default class Player {
                     if (this.velocity.y > 0) {
                         this.velocity.y = 0;
                         this.position.y = block.position.y - this.height - 0.01;
+                        this.jumps = 0;
                         break;
                     }
                 }
@@ -56,6 +55,7 @@ export default class Player {
                         if (this.velocity.y > 0) {
                             this.velocity.y = 0;
                             this.position.y = block.position.y - this.height - 0.01;
+                            this.jumps = 0;
                             break;
                         }
                     }
