@@ -4,15 +4,10 @@
     box-sizing: border-box;
 }
 
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 /* Canvas */
 canvas#canvas {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
 }
