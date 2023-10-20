@@ -3,6 +3,7 @@ import test_map_loc from './assets/maps/test/test_map.png';
 import { globals } from './utils';
 import Terrain from './modules/Terrain';
 import { surface_data } from './assets/maps/test/data';
+import { platform_data } from './assets/maps/test/data';
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('canvas');
@@ -34,21 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     
     const test_map = new Terrain(test_map_loc);
-    test_map.load(surface_data);
-    
+    test_map.load({
+        surface_data: surface_data,
+        platform_data: platform_data
+    });    
     
     const player = new Player({
         position: {x: 100, y: canvas.height - 100},
-        surface_blocks: test_map.surface_blocks
+        surface_blocks: test_map.surface_blocks,
+        platform_blocks: test_map.platform_blocks
     });
 
     const animate = () => {
         requestAnimationFrame(animate);
-
-        // Render background
-        ctx.fillStyle = 'rgba(255, 0, 0, 0.8)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
 
         // Render surface
         //ctx.fillStyle = 'black';
@@ -60,9 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Player movement
         if (keys.right.pressed) {
-            player.velocity.x = 5
+            player.velocity.x = globals.PLAYER_SPEED
         } else if (keys.left.pressed) {
-            player.velocity.x = -5
+            player.velocity.x = -globals.PLAYER_SPEED
         } else {
             player.velocity.x = 0;
         }
@@ -76,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'w':
             case 'ArrowUp':
                 keys.up.pressed = true
-                player.velocity.y = -10;
+                player.velocity.y = -globals.PLAYER_JUMP_HEIGHT;
                 break;
 
             case 'd':
