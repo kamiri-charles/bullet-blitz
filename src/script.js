@@ -27,7 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const keys = {
         right: {pressed: false},
-        left: {pressed: false}
+        left: {pressed: false}, 
+        fire_weapon: {pressed: false}
     };
     
     const test_map = new Terrain(test_map_loc);
@@ -51,12 +52,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Player movement
         if (keys.right.pressed) {
-            player.velocity.x = globals.PLAYER_SPEED
+            globals.DIRECTION = 'right';
+            player.velocity.x = globals.PLAYER_SPEED;
         } else if (keys.left.pressed) {
-            player.velocity.x = -globals.PLAYER_SPEED
+            globals.DIRECTION = "left";
+            player.velocity.x = -globals.PLAYER_SPEED;
         } else {
             player.velocity.x = 0;
-        }
+        };
+
+
+        // Fire bullet
+        if (keys.fire_weapon.pressed) player.fire_weapon();
     };
 
     animate();
@@ -81,6 +88,10 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'ArrowLeft':
                 keys.left.pressed = true;
                 break;
+
+            case 'p':
+                keys.fire_weapon.pressed = true;
+                break
         };
     });
 
@@ -94,6 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
         case "a":
         case "ArrowLeft":
           keys.left.pressed = false;
+          break;
+
+        case "p":
+          keys.fire_weapon.pressed = false;
           break;
       }
     });

@@ -1,4 +1,5 @@
 import { detect_rect_collision, detect_platform_collision, globals } from "../utils";
+import Weapon from "./Weapon";
 
 
 export default class Player {
@@ -6,13 +7,21 @@ export default class Player {
         this.position = position;
         this.surface_blocks = surface_blocks;
         this.platform_blocks = platform_blocks;
-        this.width = 25;
-        this.height = 25;
+        this.width = 30;
+        this.height = 50;
+        this.jumps = 0;
+
         this.velocity = {
             x: 0,
             y: 0
         };
-        this.jumps = 0;
+
+        this.weapon = new Weapon({
+            position: {
+                x: this.position.x + 10,
+                y: this.position.y + 10
+            }
+        });
     };
     
     _apply_gravity() {
@@ -86,15 +95,42 @@ export default class Player {
                 }
             }
     };
+
+    fire_weapon() {
+        this.weapon.fire_bullet();
+    };
                 
     draw(context) {
-        context.fillStyle = 'black';
-        context.fillRect(this.position.x, this.position.y, this.width, this.height);
+        context.beginPath();
+        if (globals.DIRECTION === 'left') {
+            context.fillStyle = 'black';
+            context.fillRect(this.position.x, this.position.y, this.width, this.height);
+        } else {
+            context.fillStyle = 'black';
+            context.fillRect(this.position.x, this.position.y, this.width, this.height);
+        }
+        context.closePath();
+        this.weapon.render(context);
     };
                 
     update() {
         // Horizontal movement
         this.position.x += this.velocity.x;
+        this.flipped_x = -this.position.x - this.width;
+
+        // Update weapon position
+        if (globals.DIRECTION === 'left') {
+            this.weapon.position = {
+                x: this.position.x - this.width,
+                y: this.position.y + 10
+            };
+        } else {
+            this.weapon.position = {
+                x: this.position.x + 10,
+                y: this.position.y + 10,
+            };
+        }
+
         this._check_horizontal_collision();
         this._check_vertical_collision();
     };

@@ -4,7 +4,8 @@ export const globals = {
     PLAYER_SPEED: 10,
     PLAYER_JUMP_HEIGHT: 15,
     GRAVITY: 0.9,
-    MAX_JUMPS: 2
+    MAX_JUMPS: 2,
+    DIRECTION: 'right'
 };
 
 export const detect_rect_collision = ({object_1, object_2}) => {
