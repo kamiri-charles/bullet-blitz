@@ -72,7 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (player.velocity.x > -globals.MAX_PLAYER_SPEED) {
               player.velocity.x -= globals.ACCELERATION;
             };
-        }
+        };
+
+        //console.log(player.velocity.x);
 
 
         // Fire bullet

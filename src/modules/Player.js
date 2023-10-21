@@ -118,6 +118,7 @@ export default class Player {
     update(bullets) {
         // Horizontal movement
         this.position.x += this.velocity.x;
+        if (this.velocity.x <= 0.01 && this.velocity.x >= -0.01) this.velocity.x = 0;
 
         if (this.velocity.x > 0) this.velocity.x -= globals.FRICTION;
         else if (this.velocity.x < 0) this.velocity.x += globals.FRICTION;
