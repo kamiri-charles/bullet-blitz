@@ -1,11 +1,13 @@
 export const globals = {
     GAME_WIDTH: 800,
     GAME_HEIGHT: 640,
-    PLAYER_SPEED: 10,
-    PLAYER_JUMP_HEIGHT: 15,
     GRAVITY: 0.9,
+    FRICTION: 0.2,
+    MAX_PLAYER_SPEED: 10,
+    ACCELERATION: 2,
+    PLAYER_JUMP_HEIGHT: 15,
     MAX_JUMPS: 2,
-    DIRECTION: 'right'
+    BULLETS: []
 };
 
 export const detect_rect_collision = ({object_1, object_2}) => {
@@ -26,5 +28,6 @@ export const detect_platform_collision = ({object_1, object_2}) => {
         object_1.position.y + object_1.height >= object_2.position.y
     );
 };
+
 
 

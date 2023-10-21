@@ -1,5 +1,5 @@
 import { detect_rect_collision, detect_platform_collision, globals } from "../utils";
-import Weapon from "./Weapon";
+import Weapon, { Sniper } from "./Weapon";
 
 
 export default class Player {
@@ -10,13 +10,15 @@ export default class Player {
         this.width = 30;
         this.height = 50;
         this.jumps = 0;
+        this.direction = 'right';
+    
 
         this.velocity = {
             x: 0,
             y: 0
         };
 
-        this.weapon = new Weapon({
+        this.weapon = new Sniper({
             position: {
                 x: this.position.x + 10,
                 y: this.position.y + 10
@@ -97,12 +99,12 @@ export default class Player {
     };
 
     fire_weapon() {
-        this.weapon.fire_bullet();
+        this.weapon.fire_bullet(this.direction);
     };
                 
     draw(context) {
         context.beginPath();
-        if (globals.DIRECTION === 'left') {
+        if (this.direction === 'left') {
             context.fillStyle = 'black';
             context.fillRect(this.position.x, this.position.y, this.width, this.height);
         } else {
@@ -113,13 +115,15 @@ export default class Player {
         this.weapon.render(context);
     };
                 
-    update() {
+    update(bullets) {
         // Horizontal movement
         this.position.x += this.velocity.x;
-        this.flipped_x = -this.position.x - this.width;
+
+        if (this.velocity.x > 0) this.velocity.x -= globals.FRICTION;
+        else if (this.velocity.x < 0) this.velocity.x += globals.FRICTION;
 
         // Update weapon position
-        if (globals.DIRECTION === 'left') {
+        if (this.direction === 'left') {
             this.weapon.position = {
                 x: this.position.x - this.width,
                 y: this.position.y + 10
@@ -131,12 +135,23 @@ export default class Player {
             };
         }
 
+        // Check collision with bullets
+        bullets.forEach(bullet => {
+            if (detect_rect_collision({
+                object_1: this,
+                object_2: bullet
+            })) {
+                this.velocity.x = bullet.power;
+                bullet.marked_for_deletion = true;
+            };
+        })
+
         this._check_horizontal_collision();
         this._check_vertical_collision();
     };
                 
-    render(context) {
-        this.update();
+    render(context, bullets) {
+        this.update(bullets);
         this.draw(context);
     };
 };

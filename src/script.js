@@ -4,6 +4,7 @@ import { globals } from './utils';
 import test_map_loc from './assets/maps/test/test_map.png';
 import { surface_data } from './assets/maps/test/data';
 import { platform_data } from './assets/maps/test/data';
+import Enemy from './modules/Enemy';
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('canvas');
@@ -43,27 +44,46 @@ document.addEventListener('DOMContentLoaded', () => {
         platform_blocks: test_map.platform_blocks
     });
 
+    const enemy = new Enemy({
+        position: {
+            x: Math.random() * globals.GAME_WIDTH,
+            y: Math.random() * globals.GAME_HEIGHT
+        },
+        surface_blocks: test_map.surface_blocks,
+        platform_blocks: test_map.platform_blocks
+    });
+
     const animate = () => {
         requestAnimationFrame(animate);
 
         test_map.render(ctx);
-        player.render(ctx);
+        player.render(ctx, globals.BULLETS);
+        enemy.render(ctx, globals.BULLETS);
 
 
         // Player movement
         if (keys.right.pressed) {
-            globals.DIRECTION = 'right';
-            player.velocity.x = globals.PLAYER_SPEED;
+            player.direction = 'right';
+            if (player.velocity.x < globals.MAX_PLAYER_SPEED) {
+                player.velocity.x += globals.ACCELERATION;
+            };
         } else if (keys.left.pressed) {
-            globals.DIRECTION = "left";
-            player.velocity.x = -globals.PLAYER_SPEED;
-        } else {
-            player.velocity.x = 0;
-        };
+            player.direction = "left";
+            if (player.velocity.x > -globals.MAX_PLAYER_SPEED) {
+              player.velocity.x -= globals.ACCELERATION;
+            };
+        }
 
 
         // Fire bullet
         if (keys.fire_weapon.pressed) player.fire_weapon();
+
+
+        // Update globals-bullets
+        globals.BULLETS.forEach(bullet => {
+            if (bullet.position.x < -bullet.width || bullet.position.x > globals.GAME_WIDTH + bullet.width) bullet.marked_for_deletion = true
+        });
+        globals.BULLETS = globals.BULLETS.filter(bullet => !bullet.marked_for_deletion);
     };
 
     animate();

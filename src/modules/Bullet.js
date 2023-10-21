@@ -1,23 +1,20 @@
 import { globals } from "../utils";
 
 export default class Bullet {
-    constructor({position}) {
+    constructor({position, direction, power}) {
         this.position = position;
-        this.radius = 5;
-        this.speed = 20;
+        this.direction = direction
+        this.width = 10;
+        this.height = 10;
+        this.speed = this.direction === 'left' ? -20 : 20;
+        this.power = this.direction === "left" ? -power : power;
         this.marked_for_deletion = false;
-        
-        if (globals.DIRECTION === "right") {
-            this.speed = 20;
-        } else {
-            this.speed = -20;
-        }
     }
     
     draw(context) {
         context.beginPath();
         context.fillStyle = 'red';
-        context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
+        context.fillRect(this.position.x, this.position.y, this.width, this.height);
         context.fill();
         context.closePath();
     }
@@ -25,7 +22,7 @@ export default class Bullet {
     update() {
         this.position.x +=  this.speed;
         
-        if (this.position.x < 0 - (this.radius * 0.5) || this.position.x > globals.GAME_WIDTH + (this.radius * 0.5)) this.marked_for_deletion = true;
+        if (this.position.x < -this.width || this.position.x > globals.GAME_WIDTH + this.width) this.marked_for_deletion = true;
     };
     
     render(context) {
