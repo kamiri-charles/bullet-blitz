@@ -58,7 +58,7 @@ export default class Terrain {
 	};
 			
 			
-	load({surface_data, platform_data}) {
+	load({surface_data = [], platform_data = []}) {
 		this.load_surface(surface_data);
 		this.load_platforms(platform_data);	
 	};

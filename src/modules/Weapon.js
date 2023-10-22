@@ -8,7 +8,7 @@ export  default class Weapon {
         this.bullets = [];
         this.width = 50;
         this.height = 20;
-        this.max_ammo = 30;
+        this.max_ammo = 15;
         this.power = 5;
     }
 
@@ -36,7 +36,7 @@ export  default class Weapon {
         this.update();
 
         context.beginPath();
-        context.fillStyle = "blue";
+        context.fillStyle = "black";
         context.fillRect(this.position.x, this.position.y, this.width, this.height);
         context.closePath();
 

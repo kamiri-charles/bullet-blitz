@@ -1,10 +1,11 @@
 import Player from './modules/Player';
 import Terrain from './modules/Terrain';
-import { globals } from './utils';
-import test_map_loc from './assets/maps/test/test_map.png';
-import { surface_data } from './assets/maps/test/data';
-import { platform_data } from './assets/maps/test/data';
 import Enemy from './modules/Enemy';
+import { globals } from './utils';
+import pyramid_loc from './assets/maps/pyramid/pyramid.png';
+import test_map_loc from './assets/maps/test/test_map.png';
+import { pyramid_platform_data } from './assets/maps/pyramid/data';
+import { test_map_platform_data, test_map_surface_data } from './assets/maps/test/data';
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('canvas');
@@ -28,37 +29,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const keys = {
         right: {pressed: false},
-        left: {pressed: false}, 
+        left: {pressed: false},
+        down: {pressed: false},
         fire_weapon: {pressed: false}
     };
     
-    const test_map = new Terrain(test_map_loc);
-    test_map.load({
-        surface_data: surface_data,
-        platform_data: platform_data
+    const map = new Terrain(test_map_loc);
+    map.load({
+        surface_data: test_map_surface_data,
+        platform_data: test_map_platform_data
     });    
     
     const player = new Player({
         position: {x: 100, y: canvas.height - 100},
-        surface_blocks: test_map.surface_blocks,
-        platform_blocks: test_map.platform_blocks
+        surface_blocks: map.surface_blocks,
+        platform_blocks: map.platform_blocks
     });
 
     const enemy = new Enemy({
         position: {
-            x: Math.random() * globals.GAME_WIDTH,
-            y: Math.random() * globals.GAME_HEIGHT
+            x: 100,
+            y: 100
         },
-        surface_blocks: test_map.surface_blocks,
-        platform_blocks: test_map.platform_blocks
+        surface_blocks: map.surface_blocks,
+        platform_blocks: map.platform_blocks
     });
+
+    setInterval(() => {
+        enemy.fire_weapon();
+    }, 2000);
 
     const animate = () => {
         requestAnimationFrame(animate);
 
-        test_map.render(ctx);
+        map.render(ctx);
         player.render(ctx, globals.BULLETS);
         enemy.render(ctx, globals.BULLETS);
+
 
 
         // Player movement
@@ -73,9 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
               player.velocity.x -= globals.ACCELERATION;
             };
         };
-
-        //console.log(player.velocity.x);
-
 
         // Fire bullet
         if (keys.fire_weapon.pressed) player.fire_weapon();
@@ -111,6 +115,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 keys.left.pressed = true;
                 break;
 
+            case 's':
+            case 'ArrowDown':
+                keys.down.pressed = true;
+                player.platform_drop();
+                break;
+
             case 'p':
                 keys.fire_weapon.pressed = true;
                 break
@@ -127,6 +137,11 @@ document.addEventListener('DOMContentLoaded', () => {
         case "a":
         case "ArrowLeft":
           keys.left.pressed = false;
+          break;
+
+        case "s":
+        case "ArrowDown":
+          keys.down.pressed = false;
           break;
 
         case "p":

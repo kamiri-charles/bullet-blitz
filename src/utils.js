@@ -1,7 +1,7 @@
 export const globals = {
     GAME_WIDTH: 800,
     GAME_HEIGHT: 640,
-    GRAVITY: 0.9,
+    GRAVITY: 0.7,
     FRICTION: 0.2,
     MAX_PLAYER_SPEED: 10,
     ACCELERATION: 2,
@@ -29,5 +29,8 @@ export const detect_platform_collision = ({object_1, object_2}) => {
     );
 };
 
-
-
+export const standing_on_platform = ({object_1, object_2}) => {
+    return (
+        object_1.position.y + object_1.height + 0.01 === object_2.position.y
+    );
+};

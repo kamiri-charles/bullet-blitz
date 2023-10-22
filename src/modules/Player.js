@@ -1,6 +1,6 @@
-import { detect_rect_collision, detect_platform_collision, globals } from "../utils";
+import { detect_rect_collision, detect_platform_collision, globals, standing_on_platform } from "../utils";
 import Weapon, { Sniper } from "./Weapon";
-
+import test_player_sprite_loc from '../assets/spritesheets/test.png';
 
 export default class Player {
     constructor({ position, surface_blocks, platform_blocks }) {
@@ -11,8 +11,10 @@ export default class Player {
         this.height = 50;
         this.jumps = 0;
         this.direction = 'right';
+        this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        this.sprite = new Image();
+        this.sprite.src = test_player_sprite_loc;
     
-
         this.velocity = {
             x: 0,
             y: 0
@@ -98,19 +100,32 @@ export default class Player {
             }
     };
 
+    platform_drop() {
+        this.platform_blocks.forEach(block => {
+          if (
+            standing_on_platform({
+              object_1: this,
+              object_2: block,
+            })
+          ) {
+            this.position.y += 17;
+          }
+        });
+    };
+
     fire_weapon() {
         this.weapon.fire_bullet(this.direction);
     };
                 
     draw(context) {
         context.beginPath();
+        context.fillStyle = this.color;
         if (this.direction === 'left') {
-            context.fillStyle = 'black';
             context.fillRect(this.position.x, this.position.y, this.width, this.height);
         } else {
-            context.fillStyle = 'black';
             context.fillRect(this.position.x, this.position.y, this.width, this.height);
-        }
+        };
+
         context.closePath();
         this.weapon.render(context);
     };
@@ -126,13 +141,13 @@ export default class Player {
         // Update weapon position
         if (this.direction === 'left') {
             this.weapon.position = {
-                x: this.position.x - this.width,
+                x: this.position.x - this.width-10,
                 y: this.position.y + 10
             };
         } else {
             this.weapon.position = {
-                x: this.position.x + 10,
-                y: this.position.y + 10,
+                x: this.position.x + 20,
+                y: this.position.y + 10
             };
         }
 
